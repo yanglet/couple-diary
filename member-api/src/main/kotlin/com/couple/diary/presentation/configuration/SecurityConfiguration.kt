@@ -37,6 +37,7 @@ class SecurityConfiguration {
     @Bean
     protected fun filterChain(http: HttpSecurity, introspector: HandlerMappingIntrospector?): SecurityFilterChain? =
         http
+            .formLogin { it.disable() }
             .csrf { it.disable() }
             .authorizeHttpRequests { authorize ->
                 authorize
