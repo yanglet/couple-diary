@@ -10,6 +10,7 @@ class MemberRepositoryImpl(
     private val jpaMemberRepository: JpaMemberRepository
 ) : MemberRepository {
     override fun save(member: Member) = jpaMemberRepository.save(member)
-
     override fun findByIdOrNull(memberNo: Long) = jpaMemberRepository.findByIdOrNull(memberNo)
+    override fun findByEmail(email: String) = jpaMemberRepository.findByEmail(email)
+    override fun existsByEmail(email: String) = jpaMemberRepository.existsByEmail(email)
 }

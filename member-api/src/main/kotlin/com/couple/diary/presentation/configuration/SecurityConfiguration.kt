@@ -1,5 +1,8 @@
 package com.couple.diary.presentation.configuration
 
+import com.couple.diary.application.security.JwtService
+import com.couple.diary.application.security.PrincipalDetailsService
+import com.couple.diary.application.security.filter.JwtAuthenticationFilter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.Customizer
@@ -11,14 +14,15 @@ import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
-import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher
-import org.springframework.web.servlet.handler.HandlerMappingIntrospector
 
 
 @Configuration
 @EnableWebSecurity
-class SecurityConfiguration {
+class SecurityConfiguration(
+    private val jwtService: JwtService,
+    private val principalDetailsService: PrincipalDetailsService
+) {
     @Bean
     fun passwordEncoder(): PasswordEncoder? = BCryptPasswordEncoder()
 
@@ -35,16 +39,21 @@ class SecurityConfiguration {
         }
 
     @Bean
-    protected fun filterChain(http: HttpSecurity, introspector: HandlerMappingIntrospector?): SecurityFilterChain? =
+    protected fun filterChain(http: HttpSecurity): SecurityFilterChain? =
         http
             .formLogin { it.disable() }
             .csrf { it.disable() }
             .authorizeHttpRequests { authorize ->
                 authorize
-                    .requestMatchers(MvcRequestMatcher(introspector, "/**")).permitAll()
+                    .requestMatchers("/v1/members/join", "/v1/members/login").anonymous()
+                    .requestMatchers("/v1/members/**").hasRole("MEMBER")
                     .anyRequest().authenticated()
             }
             .httpBasic(Customizer.withDefaults())
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
+            .addFilterBefore(
+                JwtAuthenticationFilter(jwtService, principalDetailsService),
+                JwtAuthenticationFilter::class.java
+            )
             .build()
 }
