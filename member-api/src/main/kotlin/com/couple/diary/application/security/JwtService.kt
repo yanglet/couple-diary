@@ -47,10 +47,7 @@ class JwtService(
     }
 
     fun recreateAccessTokenByRefreshToken(refreshToken: String): String {
-        val validated = isValidatedToken(refreshToken)
-        if (!validated) {
-            throw TokenInvalidException("토큰이 유효하지 않습니다.")
-        }
+        validateToken(refreshToken)
 
         val claims = getClaims(refreshToken)
 
@@ -86,6 +83,13 @@ class JwtService(
     fun isValidatedToken(token: String): Boolean {
         val result = kotlin.runCatching { getClaims(token) }
         return result.isSuccess
+    }
+
+    private fun validateToken(token: String) {
+        val validated = isValidatedToken(token)
+        if (!validated) {
+            throw TokenInvalidException("토큰이 유효하지 않습니다.")
+        }
     }
 
     private fun validateIssuer(issuer: String) {

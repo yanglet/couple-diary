@@ -50,10 +50,10 @@ class MemberService(
         val isMatched = passwordEncoder.matches(param.password, member.password)
         when {
             isMatched -> {
-                val tokens = authService.getTokens(member)
+                val tokenResponse = authService.getTokens(member)
                 return MemberLoginResponse(
-                    accessToken = tokens.first,
-                    refreshToken = tokens.second
+                    accessToken = tokenResponse.accessToken,
+                    refreshToken = tokenResponse.refreshToken
                 )
             }
             else -> throw PasswordNotMatchedException("비밀번호가 일치하지 않습니다.")
