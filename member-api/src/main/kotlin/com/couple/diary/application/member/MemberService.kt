@@ -47,9 +47,9 @@ class MemberService(
     fun login(param: MemberLoginParam): MemberLoginResponse {
         val member = memberRepository.findByEmail(param.email) ?: throw MemberNotFoundException("찾을 수 없는 회원입니다.")
 
-        val isMatched = passwordEncoder.matches(param.password, member.password)
+        val matched = passwordEncoder.matches(param.password, member.password)
         when {
-            isMatched -> {
+            matched -> {
                 val tokenResponse = authService.getTokens(member)
                 return MemberLoginResponse(
                     accessToken = tokenResponse.accessToken,
