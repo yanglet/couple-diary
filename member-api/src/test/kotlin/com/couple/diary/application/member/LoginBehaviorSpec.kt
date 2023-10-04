@@ -90,7 +90,7 @@ class LoginBehaviorSpec : BehaviorSpec({
         every { memberRepository.findByEmail(email) } answers { member }
         every { passwordEncoder.matches(password, member.password) } answers { true }
         every { authService.getTokens(member) } answers {
-            UnitTestHelper.createTokenResponse("accessToken", "refreshToken")
+            UnitTestHelper.createTokenResponse(accessToken = "accessToken", refreshToken = "refreshToken")
         }
 
         When("정상 로그인 요청이 오면") {
