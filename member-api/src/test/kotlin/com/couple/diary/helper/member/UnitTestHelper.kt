@@ -1,6 +1,8 @@
 package com.couple.diary.helper.member
 
+import com.couple.diary.application.auth.dto.TokenResponse
 import com.couple.diary.application.member.dto.MemberJoinParam
+import com.couple.diary.application.member.dto.MemberLoginParam
 
 class UnitTestHelper {
     companion object {
@@ -14,6 +16,20 @@ class UnitTestHelper {
             profileImage: String?
         ) = MemberJoinParam(
             email, password, name, phone, birth, gender, profileImage
+        )
+
+        fun createMemberLoginParam(
+            email: String,
+            password: String
+        ) = MemberLoginParam(
+            email, password
+        )
+
+        fun createTokenResponse(
+            accessToken: String,
+            refreshToken: String
+        ) = TokenResponse(
+            accessToken, refreshToken
         )
     }
 }
