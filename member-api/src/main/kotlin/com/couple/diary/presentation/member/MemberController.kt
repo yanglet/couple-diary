@@ -28,7 +28,7 @@ class MemberController(
     }
 
     @PostMapping("/login")
-    fun login(@RequestBody request: MemberLoginRequest): ResponseEntity<MemberLoginResponse> =
+    fun login(@RequestBody @Validated request: MemberLoginRequest): ResponseEntity<MemberLoginResponse> =
         ResponseEntity.ok(
             memberService.login(request.toParam())
         )
